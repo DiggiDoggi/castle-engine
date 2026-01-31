@@ -299,3 +299,82 @@ Skin : X3DChildNode {
     Common root of the joints hierarchy.
     """
 }
+
+BlendShapeTarget : X3DChildNode {
+  SFString   [in,out] name ""
+    change: chEverything
+    doc: """
+    Optional name of this blend shape target. For example, 'Smile'.
+    """
+
+  MFVec3d   [in,out] deltaCoords []
+    change: chEverything
+    doc: """
+    Required.
+    @italic(Each delta array - coordinates, normals, and tangents - must match the base mesh vertex count.)
+    """
+
+  MFVec3d   [in,out] deltaNormals []
+    change: chEverything
+    doc: """
+    Optional.
+    """
+
+  MFVec4d   [in,out] deltaTangents []
+    change: chEverything
+    doc: """
+    Optional.
+    """
+
+  SFBool    [in,out] static FALSE
+    change: chEverything
+    doc: """
+    If true, this blend shape (also called a morph) is static. A static blend shape is applied once when it is loaded, and its effect is baked into the mesh.
+
+    After baking, the blend shape data is no longer needed and can be discarded, because the shape is now part of the geometry and will not be animated.
+
+    Static blend shape targets are useful for permanent adjustments to a model’s geometry. They can be used for:
+
+    @unorderedlist(
+    - Tree variations.
+    - Stylized objects.
+    - A car tyre flattened into a damaged shape.
+    - Overall body shape changes on humanoid characters.
+    )
+
+    Each static blend shape target is baked into the model’s @italic(current) shape, and you can load and apply static targets later as well. When applied later, they are baked on top of any static changes already present.
+
+    If you ever need to restore the model to its original shape, you can:
+
+@unorderedlist(
+  - Reload the model without any blend shapes.
+  - Reload the blend shape list from disk and apply the same blend shapes
+    again with weight 0 to restore the original shape.
+)    """
+
+  SFFloat   [in,out] defaultWeight 0
+    doc: """
+    The default weight of this blend shape target (morph target). It is the value used when it is first loaded and applied, and usually reflects the intention of the 3D artist.
+
+    For @italic(static) blend shape targets, this value becomes the baked weight when the target is applied to the mesh.
+
+    For @italic(dynamic) ones, it is only the initial value and can be used later to restore the model to its original shape.
+    """
+}
+BlendShape : X3DChildNode {
+  SFString  [in,out] name ""
+    change: chEverything
+    doc: """
+    Optional name of this blend shape (morph) group. This can be any label,
+    for example, 'Facial_expressions'.
+    """
+
+  MFNode    [in,out] targets []
+    change: chEverything
+    range: BlendShapeTarget
+    doc: """
+    List of blend shape targets. Each target defines one deformation that can be applied to the model. The final result is a mix of all active targets, even those loaded from other blend shape groups.
+
+    In other tools, these are called morph targets (glTF) or shape keys (Blender).
+    """
+}
